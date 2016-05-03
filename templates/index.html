@@ -2,16 +2,24 @@
 
 <html>
     <head>
-        <title>Ugly insights</title>
+        <title>{{ title }}</title>
     </head>
 
     <body>
         <header>
-            <h1>Ugly insights</h1>
+            <h1>{{ title }}</h1>
         </header>
 
         <section>
-            <p>{{ temporary_content }}</p>
+            <h2>Posts</h2>
+            <ul>
+{% for post in posts %}
+                <li>
+                    <h3><a href="{{ post.link }}">{{ post.title }}</a></h3>
+                    <p>{{ post.summary }}
+                </li>
+{% endfor %}
+            </ul>
         </section>
     </body>
 </html>
