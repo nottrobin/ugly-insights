@@ -1,20 +1,24 @@
 import feedparser
 import requests
-from django.http import HttpResponse
-from django.shortcuts import render
+from httpcache import CachingHTTPAdapter
+from django_template_finder_view import TemplateFinder
 
 
-def index(request):
-    """
-    Render the homepage of the site
-    """
+class InsightsTemplateFinder(TemplateFinder):
+    def get_context_data(self, **kwargs):
+        """
+        Add insights data to context
+        """
 
-    insights_feed = requests.get('https://insights.ubuntu.com/feed')
-    insights = feedparser.parse(insights_feed.text)
+        session = requests.Session()
+        session.mount('http://', CachingHTTPAdapter())
 
-    context = {
-        'title': insights.feed['title'],
-        'posts': insights.entries
-    }
+        insights_feed = session.get('https://insights.ubuntu.com/feed')
+        insights = feedparser.parse(insights_feed.text)
 
-    return render(request, 'index.html', context)
+        context = {
+            'title': insights.feed['title'],
+            'posts': insights.entries
+        }
+
+        return context
